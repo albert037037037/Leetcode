@@ -1,26 +1,25 @@
 /**
  * Author: Albert Wang <albert037037037@gmail.com>
  * Problem: https://leetcode.com/problems/sum-of-subarray-minimums/
- * runtime: 80ms
+ * runtime: 52ms
  */
 
 class Solution {
 public:
     int sumSubarrayMins(vector<int>& arr) {
-        stack<pair<int, int>> S;
-        const int modulo = 1e9+7;
-        long long ans = 0;
-        long long sum = 0;
-        for(int i=0; i<arr.size(); i++){
+        std::stack<std::pair<int, int>> stk; // <num, weight>
+        long long sum = 0, ans = 0;          // sum is those num * weight that will still contribute 
+                                             // after adding a new num
+        for(int i=0; i<arr.size(); i++) {
             int weight = 1;
-            while(!S.empty() && arr[i] < S.top().first){
-                sum -= S.top().first * S.top().second;
-                weight += S.top().second; // absorb the contribution
-                S.pop();
+            while(!stk.empty() && arr[i] < stk.top().first) {
+                weight += stk.top().second;
+                sum -= stk.top().first * stk.top().second;
+                stk.pop();
             }
-            S.push({arr[i], weight});
+            stk.push(make_pair(arr[i], weight));
             sum += arr[i] * weight;
-            ans = (ans + sum) % modulo;
+            ans = (ans + sum) % int(1e9+7);
         }
         return ans;
     }

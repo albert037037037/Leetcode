@@ -1,33 +1,35 @@
 /**
  * Author: Albert Wang <albert037037037@gmail.com>
  * Problem: https://leetcode.com/problems/reverse-linked-list-ii/
- * runtime: 4ms
+ * runtime: 0ms
  */
 
 class Solution {
 public:
     ListNode* reverseBetween(ListNode* head, int left, int right) {
-        ListNode* prev = NULL, *cur = head, *cur_next = NULL, *tmp = NULL, *record_first = NULL;
-        for(int i=1; i<left; i++){
-            prev = cur;
-            cur = cur->next;
+        if(head == nullptr || head->next == nullptr || left == right) return head;
+        // a dummy head for the situation that left = 1
+        ListNode *cur, *before, *nbrl, *tmp;
+        ListNode *dummyHead = new ListNode(0, head);
+        nbrl = dummyHead;
+        // move cur to left - 1
+        int cnt = 1;
+        while(cnt < left) {
+            cnt += 1;
+            nbrl = nbrl->next;
         }
-        cur_next = cur->next;
-        record_first = cur;
-        for(int i=left; i<right; i++){
-            tmp = cur_next->next;
-            cur_next->next = cur;
-            cur = cur_next;
-            cur_next = tmp;
+        before = nbrl->next;
+        cur = before->next;
+        // keep inserting cur to next of nbrl
+        cnt = right - left;
+        while(cnt > 0){
+            cnt -= 1;
+            before->next = cur->next;
+            cur->next = nbrl->next;
+            nbrl->next = cur;
+            cur = before->next;
         }
-        if(prev != NULL){
-            prev->next = cur;
-            record_first->next = cur_next;
-        }
-        else{
-            record_first->next = cur_next;
-            head = cur;
-        }
+        if(left == 1) head = nbrl->next;
         return head;
     }
 };

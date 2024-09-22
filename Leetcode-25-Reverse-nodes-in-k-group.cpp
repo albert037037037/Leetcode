@@ -1,42 +1,45 @@
 /**
  * Author: Albert Wang <albert037037037@gmail.com>
  * Problem: https://leetcode.com/problems/reverse-nodes-in-k-group/
- * runtime: 12ms
+ * runtime: 8ms
  */
 
 class Solution {
 public:
     ListNode* reverseKGroup(ListNode* head, int k) {
-        if(k == 1) return head;
-        int n = 0;
-        ListNode* cnt = head;
-        ListNode* cur = head;
-        ListNode* curnext = head->next;
-        ListNode* record_first = head;
-        ListNode* record_last;
-        ListNode* prev = NULL;
-        while(cnt!=NULL){
-            cnt = cnt->next;
-            n++;
-        }
-        for(int i=0; i<n/k; i++){
-            record_first = cur;
-            record_last = prev;
-            for(int j=0; j<k-1; j++){
-                prev = cur;
-                cur = curnext;
-                curnext = curnext->next;
-                cur->next = prev;
+        if(head == nullptr || head->next == nullptr || k == 1) return head;
+        // make a dummy head for the first reverse
+        ListNode *dummyHead = new ListNode(0, head);
+        ListNode *cur, *before, *nbrl = dummyHead;
+        before = head;
+        cur = head->next;
+        while(cur != nullptr) {
+            int cnt = 0;
+            while(cur != nullptr && cnt < k-1) {
+                cnt += 1;
+                before->next = cur->next;
+                cur->next = nbrl->next;
+                nbrl->next = cur;
+                cur = before->next;
             }
-            cout << "cur = " << cur->val << endl;
-            if(record_last!=NULL)cout << "record_last = " << record_last->val << endl;
-            if(i==0) head = cur;
-            if(record_last!=NULL)record_last->next = cur;
-            record_first->next = curnext;
-            prev = record_first;
-            cur = curnext;
-            if(curnext !=NULL && curnext->next != NULL)curnext = curnext->next;
+            // means there are left-out nodes
+            if(cnt < k-1) {
+                // cnt means we've done cnt times of reverse to left-out nodes
+                // so we so cnt times again to return to the original order
+                before = nbrl->next;
+                cur = before->next;
+                while(cnt--) {
+                    before->next = cur->next;
+                    cur->next = nbrl->next;
+                    nbrl->next = cur;
+                    cur = before->next;
+                }
+            } else { // set pointer for next loop
+                nbrl = before;
+                before = cur;
+                if(before != nullptr) cur = before->next;
+            }
         }
-        return head;
+        return dummyHead->next;
     }
 };

@@ -7,37 +7,25 @@
 class Solution {
 public:
     int largestRectangleArea(vector<int>& heights) {
-        int LtoR[100000]; // to find the next smaller number from right to left
-        vector<int> stk;
-        int max = 0;
-        for(int i=0; i<heights.size(); i++){
-            while(stk.size() && heights[i] < heights[stk.back()]){
-                LtoR[stk.back()] = i;
-                stk.pop_back();
+        std::stack<std::pair<int, int>> stk;
+        int maxSize = -1, size;
+        for(int i=0; i<heights.size(); i++) {
+            int numberLowerBefore = 1;
+            while(!stk.empty() && heights[i] < heights[stk.top().first]) {
+                size = heights[stk.top().first] * (i - stk.top().first + stk.top().second - 1);
+                numberLowerBefore += stk.top().second;
+                if(size > maxSize)
+                    maxSize = size;
+                stk.pop();
             }
-            stk.push_back(i); // push index
+            stk.push(make_pair(i, numberLowerBefore));
         }
-        while(stk.size()){ // If left in stack, means it can make a rectangle from itself to rightmost
-            LtoR[stk.back()] = heights.size();
-            stk.pop_back();
-        }
-
-        for(int i=heights.size()-1; i>=0; i--){
-            while(stk.size() && heights[i] < heights[stk.back()]){
-                // after finding the smaller number from right to left, we can calculate the largest rectangle this heights contributes
-                if(heights[stk.back()] * (LtoR[stk.back()] - i -1) > max) {
-                    max = heights[stk.back()] * (LtoR[stk.back()] - i -1);
-                }
-                stk.pop_back();
-            }
-            stk.push_back(i);  // push index
-        }
-        while(stk.size()){ // If left in stack, means it can make a rectangle from itself to leftmost
-            if(heights[stk.back()] * LtoR[stk.back()] > max) {
-                max = heights[stk.back()] * LtoR[stk.back()];
-            }
-            stk.pop_back();
-        }
-        return max;
+        while(!stk.empty()) {
+            size = heights[stk.top().first] * (stk.top().second + heights.size()- stk.top().first - 1);
+            if(size > maxSize)
+                maxSize = size;
+            stk.pop();
+        } 
+        return maxSize;
     }
 };

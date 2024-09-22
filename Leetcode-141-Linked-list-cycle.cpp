@@ -4,12 +4,17 @@
  * runtime: 8ms
  */
 
-bool hasCycle(struct ListNode *head) {
-    if(head == NULL) return false;
-    while(head->val!=100001 && head->next != NULL){
-        head->val = 100001;
-        head = head->next;
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        if(head == nullptr) return false;
+        ListNode *fast = head;
+        ListNode *slow = head;
+        while(fast->next != nullptr && fast->next->next != nullptr){
+            if(fast->next == slow) return true; 
+            fast = fast->next->next;
+            slow = slow->next;
+        }
+        return false;
     }
-    if(head->next == NULL) return false;
-    else return true;
-}
+};

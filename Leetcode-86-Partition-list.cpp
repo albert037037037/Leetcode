@@ -1,39 +1,38 @@
 /**
  * Author: Albert Wang <albert037037037@gmail.com>
  * Problem: https://leetcode.com/problems/partition-list/
- * runtime: 8ms
+ * runtime: 0ms
  */
 
 class Solution {
 public:
     ListNode* partition(ListNode* head, int x) {
-        ListNode* LessHead = nullptr, *GreaterHead = nullptr;
-        ListNode* lesstmp = nullptr, *greatertmp = nullptr;
-        while(head!=nullptr){
-            if(head->val < x){
-                if(LessHead == nullptr){
-                    LessHead = new ListNode(head->val);
-                    lesstmp = LessHead;
+        if(head == nullptr || head->next == nullptr) return head;
+        ListNode *lh = nullptr, *lt = nullptr, *bh = nullptr, *bt = nullptr;
+        while(head != nullptr)
+        {
+            if(head->val >= x) {
+                if(bh == nullptr) {
+                    bh = head;
+                    bt = head;
+                } else {
+                    bt->next = head;
+                    bt = bt->next;
                 }
-                else{
-                    lesstmp->next = new ListNode(head->val);
-                    lesstmp = lesstmp->next;
-                }
-            }
-            else{
-                if(GreaterHead == nullptr){
-                    GreaterHead = new ListNode(head->val);
-                    greatertmp = GreaterHead;
-                }
-                else{
-                    greatertmp->next = new ListNode(head->val);
-                    greatertmp = greatertmp->next;
+            } else{
+                if(lh == nullptr) {
+                    lh = head;
+                    lt = head;
+                } else {
+                    lt->next = head;
+                    lt = lt->next;
                 }
             }
             head = head->next;
         }
-        if(LessHead == nullptr) return GreaterHead;
-        else lesstmp->next = GreaterHead;
-        return LessHead;
+        if(lh != nullptr) lt->next = bh;
+        else lh = bh;
+        if(bt != nullptr) bt->next = nullptr;
+        return lh;
     }
 };

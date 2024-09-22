@@ -7,13 +7,14 @@
 class Solution {
 public:
     ListNode* middleNode(ListNode* head) {
-        ListNode* fast = head, *slow = head;
-        while(fast->next!=NULL && fast->next->next !=NULL){
+        ListNode *fast = head;
+        ListNode *slow = head;
+        while(fast->next != nullptr && fast->next->next != nullptr) {
             fast = fast->next->next;
             slow = slow->next;
         }
-        if(fast->next == NULL) return slow;
-        else if(fast->next->next==NULL) return (slow->next);
-        return NULL;
+        if(fast->next == nullptr) return slow;
+        else return slow->next;
+        return nullptr;
     }
 };

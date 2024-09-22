@@ -7,20 +7,24 @@
 class Solution {
 public:
     string removeKdigits(string num, int k) {
-        string ans = "";
-        for(int i=0; i<num.length(); i++){
-            while(!ans.empty() && num[i] < ans.back() && k!=0){
-                k--;
+        std::string ans;
+        for(int i=0; i<num.length(); i++) {
+            while(!ans.empty() && k > 0 && num[i] < ans.back()) {
                 ans.pop_back();
+                k -= 1;
             }
-            if(!ans.empty() || num[i] != '0') ans.push_back(num[i]);
+            if(!ans.empty() || num[i] != '0')
+                ans.push_back(num[i]);
         }
-        
-        while(k-- && !ans.empty()){
+
+        while(k > 0 && !ans.empty()) {
+            k -= 1;
             ans.pop_back();
         }
-        
-        if(ans.size() == 0) return "0";
-        else return ans;
+
+        if(!ans.empty())
+            return ans;
+        else 
+            return "0";
     }
 };

@@ -7,36 +7,27 @@
 class Solution {
 public:
     bool isValid(string s) {
-        std::stack<char> mystack;
-        for(int i=0; i<s.length(); i++){
-            if(s[i] == '(' || s[i] == '[' || s[i] == '{'){
-                mystack.push(s[i]);
-            }
-            else{
-                if(mystack.size() == 0) {
+        std::stack<char> stk;
+        for(int i=0; i<s.length(); i++) {
+            if(s[i] == '(' || s[i] == '{' || s[i] == '[') {
+                stk.push(s[i]);
+            } else {
+                if(stk.empty()) 
+                    return false;
+                else {
+                    if(s[i] == ')' && stk.top() == '(')
+                        stk.pop();
+                    else if(s[i] == '}' && stk.top() == '{')
+                        stk.pop();
+                    else if(s[i] == ']' && stk.top() == '[')
+                        stk.pop();
+                    else 
                         return false;
-                }
-                else if(s[i] == ')'){
-                    if(mystack.top() == '(') mystack.pop();
-                    else {
-                        return false;
-                    }
-                }
-                else if(s[i] == ']'){
-                    if(mystack.top() == '[') mystack.pop();
-                    else {
-                        return false;
-                    }
-                }
-                else if(s[i] == '}'){
-                    if(mystack.top() == '{') mystack.pop();
-                    else {
-                        return false;
-                    }
                 }
             }
         }
-        if(!mystack.empty()) return false;
+        if(!stk.empty())
+            return false;
         return true;
     }
 };
