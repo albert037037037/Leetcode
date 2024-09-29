@@ -1,31 +1,31 @@
 /**
  * Author: Albert Wang <albert037037037@gmail.com>
  * Problem: https://leetcode.com/problems/koko-eating-bananas/submissions/
- * runtime: 56ms
+ * runtime: 29ms
  */
 
 
 class Solution {
 public:
-    int minEatingSpeed(vector<int>& piles, int h) {
-        vector<int>::iterator biggest = max_element(piles.begin(), piles.end());
-        int left = 1, mid, ans;
-        int right = *biggest;
-        int cost;
-        while(left <= right){
-            mid = (left + right) / 2;
-            cost = 0;
-            for(int i=0; i<piles.size(); i++){
-                if(piles[i]%mid) cost += (piles[i]/mid + 1);
-                else cost += piles[i]/mid;
-            }
-            if(cost <= h){
-                ans = mid;
-                right = mid - 1;
-            }
-            else
-                left = mid + 1;
+    bool tryK(vector<int> &piles, int k, int h) {
+        for(int i=0; i<piles.size(); i++) {
+            h -= piles[i] / k;
+            if (piles[i] % k != 0) h -= 1;
         }
-        return ans;
+        if(h < 0) return false;
+        else return true;
+    }
+    int minEatingSpeed(vector<int>& piles, int h) {
+        int maxE = *std::max_element(piles.begin(), piles.end());
+        int left = 1, right = maxE;
+        while(left <= right) {
+            int mid = (left+right) / 2;
+            if(tryK(piles, mid, h)) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return ceil(double((left+right))/2);
     }
 };

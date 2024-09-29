@@ -1,31 +1,42 @@
 /**
  * Author: Albert Wang <albert037037037@gmail.com>
  * Problem: https://leetcode.com/problems/find-k-closest-elements/
- * runtime: 68ms
+ * runtime: 20ms
  */
 
-#include <math.h>
-
+#include <cmath>
 class Solution {
 public:
     vector<int> findClosestElements(vector<int>& arr, int k, int x) {
-        priority_queue<pair<int, int>> ans;
-        vector<int> re_ans;
-        for(int i=0; i<arr.size(); i++){
-            if(ans.size() < k)
-                ans.push({abs(arr[i]-x), arr[i]});
-            else{
-                if(abs(arr[i]-x) < ans.top().first){
-                    ans.pop();
-                    ans.push({abs(arr[i]-x), arr[i]});
-                }
+        auto pos = std::lower_bound(arr.begin(), arr.end(), x);
+        int right = std::distance(arr.begin(), pos);
+        int left = right - 1;
+        std::vector<int> ans;
+        while(k > 0 && left >= 0 && right < arr.size()) {
+            if(abs(arr[left] - x) <= abs(arr[right] - x)) {
+                ans.push_back(arr[left]);
+                left -= 1;
+            } else {
+                ans.push_back(arr[right]);
+                right += 1;
+            }
+            k -= 1;
+        }
+        
+        if(k != 0) {
+            while(left >= 0 && k > 0) {
+                ans.push_back(arr[left]);
+                left -= 1;
+                k -= 1;
+            }
+            while(right < arr.size() && k > 0) {
+                ans.push_back(arr[right]);
+                right += 1;
+                k -= 1;
             }
         }
-        while(ans.size()){
-            re_ans.push_back(ans.top().second);
-            ans.pop();
-        }
-        sort(re_ans.begin(), re_ans.end());
-        return re_ans;
+        std::sort(ans.begin(), ans.end());
+        
+        return ans;
     }
 };
