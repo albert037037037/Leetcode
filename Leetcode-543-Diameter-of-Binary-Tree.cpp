@@ -5,22 +5,20 @@
  */
 
 class Solution {
-private:
-    pair<int, int> traverse(TreeNode* root){
-        if(root == NULL) return {0, 0};
-        pair<int, int> left, right;
-        left = traverse(root->left);
-        right = traverse(root->right);
-        
-        int height = max(left.first, right.first) + 1;
-        int diameter = max(left.first + right.first, max(left.second, right.second));
-        return {height, diameter};
-    }
 public:
+    int ans = INT_MIN;
+    int solve(TreeNode* root) {
+        if(root == nullptr) return 0;
+        int left = solve(root->left);
+        int right = solve(root->right);
+        ans = max(ans, left+right);
+        if(left >= right) return left+1;
+        else return right+1;
+    }
     int diameterOfBinaryTree(TreeNode* root) {
-        ios_base::sync_with_stdio(false);
-        cin.tie(0);
-        pair<int, int> ans = traverse(root);
-        return ans.second;
+        int rl = solve(root->left);
+        int rr = solve(root->right);
+        ans = max(ans, rl+rr);
+        return ans;
     }
 };
